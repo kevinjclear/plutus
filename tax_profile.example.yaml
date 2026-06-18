@@ -1,0 +1,20 @@
+# EDUCATIONAL placeholders — replace with current-year figures or your CPA's numbers.
+# Copy to tax_profile.yaml (gitignored) and fill in. NOT tax advice.
+
+# Income inputs for the withholding-gap projection (educational; fill with YTD figures):
+wages: 0
+withheld_ytd: 0
+investment_income: 0
+months_remaining: 0
+
+filing_status: married_filing_jointly
+standard_deduction: 29200
+state_rate: 0.0          # flat state-income estimate; 0 if your state has none
+federal_brackets:        # marginal brackets, ascending; up_to: null is the top
+  - {up_to: 23200, rate: 0.10}
+  - {up_to: 94300, rate: 0.12}
+  - {up_to: 201050, rate: 0.22}
+  - {up_to: 383900, rate: 0.24}
+  - {up_to: 487450, rate: 0.32}
+  - {up_to: 731200, rate: 0.35}
+  - {up_to: null, rate: 0.37}

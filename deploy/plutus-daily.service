@@ -1,0 +1,13 @@
+[Unit]
+Description=Plutus daily finance refresh + report
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=plutus
+WorkingDirectory=/opt/plutus
+EnvironmentFile=/etc/plutus/plutus.env
+# Refresh Actual export first (exporter container), then run the toolkit.
+ExecStartPre=/usr/bin/docker compose -f /opt/plutus/docker-compose.yml run --rm exporter
+ExecStart=/opt/plutus/scripts/plutus-run

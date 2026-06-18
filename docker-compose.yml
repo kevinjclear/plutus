@@ -1,0 +1,29 @@
+services:
+  actual-server:
+    image: actualbudget/actual-server:latest
+    container_name: plutus-actual
+    ports:
+      - "5006:5006"
+    volumes:
+      - actual-data:/data
+    restart: unless-stopped
+
+  exporter:
+    build: ./exporter
+    container_name: plutus-exporter
+    profiles: ["tools"]            # on-demand: `docker compose run --rm exporter`
+    environment:
+      ACTUAL_SERVER_URL: "http://actual-server:5006"
+      ACTUAL_PASSWORD: "${ACTUAL_PASSWORD}"
+      ACTUAL_SYNC_ID: "${ACTUAL_SYNC_ID}"
+      ACTUAL_BUDGET_PASSWORD: "${ACTUAL_BUDGET_PASSWORD:-}"
+      ACTUAL_DATA_DIR: "/work/actual"
+      ACTUAL_EXPORT_PATH: "/work/exports/actual-export.json"
+    volumes:
+      - plutus-data:/work
+    depends_on:
+      - actual-server
+
+volumes:
+  actual-data:
+  plutus-data:

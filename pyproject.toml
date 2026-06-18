@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "plutus"
+version = "0.1.0"
+description = "Read-only personal finance toolkit: net worth, allocation vs strategy, and tax-aware analysis."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Kevin Clear" }]
+keywords = ["personal-finance", "actual-budget", "simplefin", "net-worth", "portfolio", "taxes"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Office/Business :: Financial",
+    "Operating System :: OS Independent",
+]
+dependencies = ["pyyaml>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/kevinjclear/plutus"
+Repository = "https://github.com/kevinjclear/plutus"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/plutus"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,21 @@
+{
+  "errors": [],
+  "accounts": [
+    {"id": "sf-chase", "name": "Chase Checking", "currency": "USD",
+     "balance": "2500.00", "balance-date": 1718600000, "org": {"name": "Chase"}},
+    {"id": "sf-schwab", "name": "Schwab Brokerage", "currency": "USD",
+     "balance": "52000.00", "balance-date": 1718600000, "org": {"name": "Charles Schwab"},
+     "holdings": [
+       {"id": "h1", "symbol": "QQQ", "description": "Invesco QQQ Trust", "shares": "10",
+        "market_value": "5000.00", "cost_basis": "4000.00", "purchase_price": "400.00", "currency": "USD"},
+       {"id": "h2", "symbol": "GLD", "description": "SPDR Gold", "shares": "20",
+        "market_value": "4000.00", "cost_basis": "4600.00", "purchase_price": "230.00", "currency": "USD"}
+     ]},
+    {"id": "sf-wf", "name": "Wealthfront Individual", "currency": "USD",
+     "balance": "10000.00", "balance-date": 1718600000, "org": {"name": "Wealthfront"},
+     "holdings": [
+       {"id": "h3", "symbol": "VTI", "description": "Vanguard Total Market", "shares": "5",
+        "market_value": "1500.00", "cost_basis": "1200.00", "purchase_price": "240.00", "currency": "USD"}
+     ]}
+  ]
+}

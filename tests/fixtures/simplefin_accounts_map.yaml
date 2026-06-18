@@ -1,0 +1,11 @@
+accounts:
+  "Schwab Brokerage":
+    institution: Schwab
+    type: brokerage
+    tax_type: taxable
+    is_liability: false
+defaults:
+  institution: Unknown
+  type: brokerage
+  tax_type: taxable
+  is_liability: false

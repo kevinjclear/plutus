@@ -1,0 +1,11 @@
+# Map each SimpleFIN account NAME to plutus metadata (investment accounts only).
+# Copy to config/simplefin_accounts.yaml and edit. Unlisted accounts use `defaults`.
+accounts:
+  "Schwab Brokerage": {institution: Schwab, type: brokerage, tax_type: taxable, is_liability: false}
+  "Wealthfront Individual": {institution: Wealthfront, type: brokerage, tax_type: taxable, is_liability: false}
+  "Vanguard 401k": {institution: Vanguard, type: retirement, tax_type: traditional, is_liability: false}
+defaults:
+  institution: Unknown
+  type: brokerage
+  tax_type: taxable
+  is_liability: false

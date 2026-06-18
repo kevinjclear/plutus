@@ -1,0 +1,71 @@
+# The "inverse" strategy benchmark. Weights are fractions (0.25 == 25%); longs sum to 1.0.
+# EDITABLE — these are placeholders to tune, not advice.
+#
+# Buckets fall in two groups:
+#   - the inverse longs (non-zero targets), and
+#   - everything else at target 0.0 — the strategy doesn't *want* these, but holdings
+#     are still classified into them so the gap shows how far off-plan you are.
+targets:
+  us_large_growth: 0.25
+  semis_ai: 0.15
+  software: 0.15
+  consumer_discretionary: 0.10
+  duration_bonds: 0.20
+  bitcoin_crypto: 0.05
+  cash: 0.10
+  # avoided / off-strategy buckets (target 0.0):
+  gold: 0.0
+  silver: 0.0
+  gold_miners: 0.0
+  energy: 0.0
+  materials: 0.0
+  broad_commodities: 0.0
+  inflation_income: 0.0
+  em_commodity_yield: 0.0
+  international_equity: 0.0
+  small_cap: 0.0
+  reits: 0.0
+  healthcare: 0.0
+  consumer_staples: 0.0
+  foreign_bonds: 0.0
+  speculative: 0.0
+tickers:
+  QQQ: us_large_growth
+  VUG: us_large_growth
+  VTI: us_large_growth
+  VOO: us_large_growth
+  SPY: us_large_growth
+  BRK.B: us_large_growth
+  SMH: semis_ai
+  SOXX: semis_ai
+  NVDA: semis_ai
+  AMD: semis_ai
+  MSFT: software
+  TLT: duration_bonds
+  IEF: duration_bonds
+  AGG: duration_bonds
+  BTC: bitcoin_crypto
+  GLD: gold
+  IAU: gold
+  SLV: silver
+  GDX: gold_miners
+  GDXJ: gold_miners
+  XLE: energy
+  DBC: broad_commodities
+  # examples for the off-strategy buckets:
+  EFA: international_equity
+  IWM: small_cap
+  VNQ: reits
+  XLV: healthcare
+  XLP: consumer_staples
+  ARKK: speculative
+
+# Fund look-through: split a holding (e.g. a target-date fund with no usable ticker)
+# across buckets, matched by a case-insensitive substring of its description.
+# Percentages should sum to ~1.0. Example for a 2060 target-date fund:
+lookthrough:
+  - match_description: "Target Retire 2060"
+    split:
+      us_large_growth: 0.54
+      international_equity: 0.36
+      duration_bonds: 0.10

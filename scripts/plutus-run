@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+"""Daily entrypoint: fetch -> assemble -> store -> snapshot -> report.
+
+Deploy-verified. Reads config from env; all secrets come from the environment
+(a secrets-manager-rendered env file in production), never hardcoded."""
+from __future__ import annotations
+
+import os
+import sys
+from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+
+import yaml
+
+from plutus.storage import Storage
+from plutus.strategy import load_strategy
+from plutus.providers.actual import ActualProvider
+from plutus.providers.simplefin import SimpleFINHoldingsProvider
+from plutus.fetch_simplefin import fetch_accounts_json
+from plutus.run import run_once
+
+
+def _compute_withholding(tax_profile_path: str):
+    """Load tax profile and compute withholding gap from income inputs in the same file.
+
+    Returns a withholding dict (from withholding_gap) or None.  Never raises —
+    any error is logged to stderr and None is returned so the daily run continues."""
+    try:
+        from plutus.tax import load_tax_profile, withholding_gap
+        profile = load_tax_profile(tax_profile_path)
+        with open(tax_profile_path) as fh:
+            raw = yaml.safe_load(fh)
+        wages = float(raw.get("wages", 0) or 0)
+        if wages <= 0:
+            return None
+        withheld_ytd = float(raw.get("withheld_ytd", 0) or 0)
+        investment_income = float(raw.get("investment_income", 0) or 0)
+        months_remaining = int(raw.get("months_remaining", 0) or 0)
+        return withholding_gap(
+            wages=wages,
+            withheld_ytd=withheld_ytd,
+            profile=profile,
+            investment_income=investment_income,
+            months_remaining=months_remaining,
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"plutus-run: withholding computation skipped: {exc}", file=sys.stderr)
+        return None
+
+
+def main() -> int:
+    data_dir = os.environ.get("PLUTUS_DATA_DIR", "./data")
+    raw = os.path.join(data_dir, "raw")
+    cfg = os.environ.get("PLUTUS_CONFIG_DIR", "./config")
+    now = datetime.now(tz=timezone.utc).replace(microsecond=0).isoformat()
+
+    # SimpleFIN holdings payload (read-only fetch).
+    sf_url = os.environ.get("SIMPLEFIN_ACCESS_URL", "")
+    sf_payload = os.path.join(raw, "simplefin-accounts.json")
+    if sf_url:
+        fetch_accounts_json(sf_url, sf_payload)
+
+    # Actual export is produced by the exporter container (compose) into this path.
+    actual_export = os.environ.get("ACTUAL_EXPORT_PATH", os.path.join(data_dir, "exports", "actual-export.json"))
+
+    providers = []
+    unmapped: list[str] = []
+    if os.path.exists(actual_export):
+        ap = ActualProvider(actual_export, os.path.join(cfg, "actual_accounts.yaml"))
+        providers.append(ap)
+        unmapped += ap.unmapped_account_names() if hasattr(ap, "unmapped_account_names") else []
+    if os.path.exists(sf_payload):
+        sp = SimpleFINHoldingsProvider(sf_payload, os.path.join(cfg, "simplefin_accounts.yaml"))
+        providers.append(sp)
+        unmapped += sp.unmapped_account_names()
+
+    if not providers:
+        print("plutus-run: no provider data found; nothing to do", file=sys.stderr)
+        return 1
+
+    # Withholding-gap projection (optional; requires tax_profile.yaml with income inputs).
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    tax_profile_path = os.environ.get(
+        "PLUTUS_TAX_PROFILE", os.path.join(repo_root, "tax_profile.yaml")
+    )
+    withholding = _compute_withholding(tax_profile_path) if os.path.exists(tax_profile_path) else None
+
+    storage = Storage(os.path.join(data_dir, "finances.db"))
+    strategy = load_strategy(os.environ.get("PLUTUS_STRATEGY", "./strategy.yaml"))
+    out = run_once(providers, storage, strategy, os.path.join(data_dir, "reports"),
+                   generated_at=now, unmapped=unmapped, withholding=withholding)
+    storage.close()
+    print(f"plutus-run: wrote {out}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,10 @@
+{
+  "name": "plutus-actual-exporter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "index.js",
+  "dependencies": {
+    "@actual-app/api": "latest"
+  }
+}

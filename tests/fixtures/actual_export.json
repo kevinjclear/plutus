@@ -1,0 +1,18 @@
+{
+  "exported_at": "2026-06-17T08:00:00.000Z",
+  "budget_sync_id": "demo-sync",
+  "accounts": [
+    {"id": "acc-chase", "name": "Chase Checking", "offbudget": false, "closed": false, "balance": 250000},
+    {"id": "acc-amex", "name": "AMEX", "offbudget": false, "closed": false, "balance": -120000},
+    {"id": "acc-schwab", "name": "Schwab Brokerage", "offbudget": true, "closed": false, "balance": 5000000},
+    {"id": "acc-old", "name": "Old Savings", "offbudget": false, "closed": true, "balance": 999}
+  ],
+  "transactions": [
+    {"id": "t1", "account": "acc-chase", "date": "2026-06-01", "amount": -4250,
+     "payee_name": "Coffee Shop", "category_name": "Dining", "notes": null, "cleared": true},
+    {"id": "t2", "account": "acc-chase", "date": "2026-06-02", "amount": 150000,
+     "payee_name": null, "category_name": "Income", "notes": "June paycheck", "cleared": false},
+    {"id": "t3", "account": "acc-old", "date": "2026-05-01", "amount": -100,
+     "payee_name": "X", "category_name": null, "notes": null, "cleared": true}
+  ]
+}

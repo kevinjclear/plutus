@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+# secrets & data — never commit
+.env
+*.cred
+*.token
+tax_profile.yaml
+data/
+raw/
+*.db
+*.sqlite
+*.sqlite3
+.DS_Store
+# Claude/session-local (not part of the project)
+.claude/
+
+# tax documents — NEVER commit
+docs/taxes/

@@ -1,0 +1,28 @@
+# Map each Actual account NAME (as shown in Actual) to plutus metadata.
+# Copy to config/actual_accounts.yaml and edit. Unlisted accounts use `defaults`.
+accounts:
+  "Chase Checking":
+    institution: Chase
+    type: checking          # checking|savings|brokerage|credit|loan|retirement
+    tax_type: none          # taxable|traditional|roth|hsa|none
+    is_liability: false
+  "AMEX":
+    institution: AMEX
+    type: credit
+    tax_type: none
+    is_liability: true
+  "Schwab Brokerage":
+    institution: Schwab
+    type: brokerage
+    tax_type: taxable
+    is_liability: false
+  "Vanguard 401k":
+    institution: Vanguard
+    type: retirement
+    tax_type: traditional
+    is_liability: false
+defaults:
+  institution: Unknown
+  type: checking
+  tax_type: none
+  is_liability: false

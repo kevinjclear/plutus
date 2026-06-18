@@ -1,0 +1,16 @@
+accounts:
+  "Chase Checking":
+    institution: Chase
+    type: checking
+    tax_type: none
+    is_liability: false
+  "AMEX":
+    institution: AMEX
+    type: credit
+    tax_type: none
+    is_liability: true
+defaults:
+  institution: Unknown
+  type: checking
+  tax_type: none
+  is_liability: false
