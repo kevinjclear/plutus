@@ -21,24 +21,28 @@ banking/budgeting side and syncs your institutions via [SimpleFIN](https://www.s
 a dependency-light Python package owns the investing/strategy/tax analysis. Actual can't see
 investment *holdings*, so those come straight from SimpleFIN.
 
-```
-                 SimpleFIN (read-only)
-                  │                │
-   transactions + balances     holdings (tickers/shares)
-                  │                │
-            Actual Budget          │
-                  │                │
-        Node exporter (@actual-app/api)
-                  │                │
-                  ▼                ▼
-        ┌───────────────────────────────┐
-        │  Providers (pluggable)         │   ActualProvider · SimpleFINHoldingsProvider
-        │     → normalized core model    │   (Plaid etc. can slot in behind the same interface)
-        └───────────────┬───────────────┘
-                        ▼
-        SQLite store (current + append-only history)
-                        ▼
-        analysis · tax · strategy gap  →  markdown report + ad-hoc queries
+```mermaid
+flowchart TD
+    SF["SimpleFIN<br/>(read-only)"]
+    AB["Actual Budget"]
+    EX["Node exporter<br/>@actual-app/api"]
+    PL["Plaid, etc.<br/>(future)"]
+    DB[("SQLite store<br/>current + append-only history")]
+    OUT["analysis · tax · strategy gap<br/>markdown report + ad-hoc queries"]
+
+    subgraph PROV["Providers — pluggable, normalized core model"]
+        AP["ActualProvider"]
+        HP["SimpleFINHoldingsProvider"]
+    end
+
+    SF -- "transactions + balances" --> AB
+    AB --> EX
+    EX --> AP
+    SF -- "holdings (tickers / shares)" --> HP
+    PL -. "same interface" .-> PROV
+    AP --> DB
+    HP --> DB
+    DB --> OUT
 ```
 
 ## Features
